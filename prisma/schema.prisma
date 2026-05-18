@@ -1,0 +1,37 @@
+// 数据源配置：指定使用的数据库类型
+datasource db {
+  provider = "postgresql"  // 数据库驱动：PostgreSQL
+}
+
+// 生成器配置：生成 Prisma 客户端（用于代码中操作数据库）
+generator client {
+  provider = "prisma-client-js"  // 生成适用于 Node.js 的客户端
+}
+
+// 用户表模型（对应数据库表名：users）
+model User {
+  id        Int      @id @default(autoincrement())  // 用户ID，主键，自增
+  email     String   @unique                        // 邮箱，唯一约束，不可重复
+  password  String                                  // 密码
+  name      String                                  // 用户名
+  createdAt DateTime @default(now()) @map("created_at")  // 创建时间，默认当前时间，映射数据库字段名 created_at
+  updatedAt DateTime @updatedAt @map("updated_at")       // 更新时间，自动更新，映射数据库字段名 updated_at
+  skills    Skill[]                                 // 一对多关系：一个用户拥有多个技能
+
+  @@map("users")  // 映射数据库表名为 users
+}
+
+// 技能表模型（对应数据库表名：skills）
+model Skill {
+  id          Int      @id @default(autoincrement())            // 技能ID，主键，自增
+  name        String   @db.VarChar(100)                         // 技能名称，字符串长度限制100
+  description String   @db.VarChar(500)                         // 技能描述，字符串长度限制500
+  content     String   @db.Text                                 // 技能详情内容，长文本类型
+  isPublic    Boolean  @default(true) @map("is_public")         // 是否公开，默认true，映射数据库字段名 is_public
+  authorId    Int      @map("author_id")                        // 作者ID（外键），映射数据库字段名 author_id
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)  // 多对一关系：多个技能属于一个用户；删除用户时级联删除其所有技能
+  createdAt   DateTime @default(now()) @map("created_at")       // 创建时间，默认当前时间
+  updatedAt   DateTime @updatedAt @map("updated_at")            // 更新时间，自动更新
+
+  @@map("skills")  // 映射数据库表名为 skills
+}

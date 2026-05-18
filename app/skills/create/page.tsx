@@ -6,7 +6,7 @@
 // 导入 useActionState 钩子，用于管理服务端 Action 的表单状态
 import { useActionState } from "react";
 // 导入之前写的创建技能的服务器 Action
-import { createSkill } from "@/app/actions/skills";
+import { createSkill } from "@/actions/skills";
 
 // 定义表单的初始状态，用于接收服务器 Action 返回的消息（比如错误提示）
 const initialState = {

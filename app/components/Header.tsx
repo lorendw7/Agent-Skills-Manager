@@ -4,10 +4,9 @@ export default function Header() {
     /* 
       daisyUI 导航栏容器
       - navbar：daisyUI 导航栏布局类
-      - bg-base-100：设置背景色为主题的基础色（白色/浅色）
       - shadow-sm：添加轻微阴影，增强层次感
     */
-    <div className="navbar bg-base-100 shadow-sm">
+    <div className="navbar shadow-sm">
       {/* 
         左侧品牌/Logo 按钮
         - btn btn-ghost：幽灵按钮样式（透明背景，hover 才变色）
