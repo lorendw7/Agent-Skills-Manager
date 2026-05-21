@@ -1,53 +1,104 @@
-// 导出一个名为 Header 的默认组件，用于渲染网站的顶部导航栏
+"use client";
+
+import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
+
 export default function Header() {
+  const { isAuthenticated, user, logout, isLoading } = useAuth();
+
   return (
-    /* 
-      daisyUI 导航栏容器
-      - navbar：daisyUI 导航栏布局类
-      - shadow-sm：添加轻微阴影，增强层次感
-    */
-    <div className="navbar shadow-sm">
-      {/* 
-        左侧品牌/Logo 按钮
-        - btn btn-ghost：幽灵按钮样式（透明背景，hover 才变色）
-        - text-xl：字体大小为 xl 级
-        - 显示文本为 "daisyUI"
-      */}
-      <a className="btn btn-ghost text-xl">daisyUI</a>
-
-      {/* 
-        弹性占位元素，flex-1 会自动填充剩余空间
-        作用是把左侧 Logo 和右侧导航菜单挤到两端
-      */}
-      <div className="flex-1"></div>
-
-      {/* 
-        水平导航菜单列表
-        - menu：daisyUI 菜单基础类
-        - menu-horizontal：设置为水平排列
-        - p-0：取消默认内边距，让菜单更紧凑
-      */}
-      <ul className="menu menu-horizontal p-0">
-        {/* 导航项：Skills（技能页面入口） */}
-        <li>
-          <a href="/skills">Skills</a>
-        </li>
-
-        {/* 导航项：About（关于页面入口） */}
-        <li>
-          <a href="/about">About</a>
-        </li>
-
-        {/* 导航项：Login（登录页面入口） */}
-        <li>
-          <a href="/login">Login</a>
-        </li>
-
-        {/* 导航项：Register（注册页面入口） */}
-        <li>
-          <a href="/register">Register</a>
-        </li>
-      </ul>
+    <div className="navbar bg-base-200 shadow-lg">
+      <div className="navbar-start">
+        <div className="dropdown">
+          <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h8m-8 6h16"
+              />
+            </svg>
+          </div>
+          <ul
+            tabIndex={0}
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+          >
+            <li>
+              <Link href="/skills">Browse Skills</Link>
+            </li>
+            {isAuthenticated && (
+              <li>
+                <Link href="/dashboard">Dashboard</Link>
+              </li>
+            )}
+          </ul>
+        </div>
+        <Link href="/" className="btn btn-ghost text-xl">
+          🤖 Agent Skills
+        </Link>
+      </div>
+      <div className="navbar-center hidden lg:flex">
+        <ul className="menu menu-horizontal px-1">
+          <li>
+            <Link href="/skills">Browse Skills</Link>
+          </li>
+          {isAuthenticated && (
+            <li>
+              <Link href="/dashboard">Dashboard</Link>
+            </li>
+          )}
+        </ul>
+      </div>
+      <div className="navbar-end">
+        {isLoading ? (
+          <span className="loading loading-spinner loading-sm"></span>
+        ) : isAuthenticated ? (
+          <div className="dropdown dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle avatar placeholder"
+            >
+              <div className="bg-primary text-primary-content w-10 rounded-full flex items-center justify-center">
+                <span className="text-lg">
+                  {user?.name?.charAt(0).toUpperCase()}
+                </span>
+              </div>
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+            >
+              <li className="menu-title">{user?.name}</li>
+              <li>
+                <Link href="/dashboard">Dashboard</Link>
+              </li>
+              <li>
+                <Link href="/dashboard/skills/new">Create Skill</Link>
+              </li>
+              <li>
+                <button onClick={logout}>Logout</button>
+              </li>
+            </ul>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <Link href="/login" className="btn btn-ghost btn-sm">
+              Login
+            </Link>
+            <Link href="/register" className="btn btn-primary btn-sm">
+              Sign Up
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
